@@ -1,9 +1,11 @@
 package chess;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import boardgame.Board;
 import boardgame.Piece;
 import boardgame.Position;
-
 import chess.pieces.King;
 import chess.pieces.Rook;
 
@@ -13,10 +15,16 @@ public class ChessMatch {
 	private int turn;
 	private Color currentPlayer;
 	
+	private List<Piece> piecesOnTheBoard;
+	private List<Piece> capturedPieces;
+	
 	public ChessMatch() {
 		board = new Board(8, 8);
 		turn = 1;
 		currentPlayer = Color.WHITE;
+		piecesOnTheBoard = new ArrayList<>();
+		capturedPieces = new ArrayList<>();
+		
 		initialSetup();
 	}
 	
@@ -60,6 +68,11 @@ public class ChessMatch {
 		Piece p = board.removePiece(source);
 		Piece capturedPiece = board.removePiece(target);
 		board.PlacePiece(p, target);
+		
+		if (capturedPiece != null) {
+			this.piecesOnTheBoard.remove(capturedPiece);
+			this.capturedPieces.add(capturedPiece);
+		}
 		return capturedPiece;
 	}
 	
@@ -73,7 +86,6 @@ public class ChessMatch {
 		if(!board.piece(position).isThereAnyPossibleMove()) {
 			throw new ChessException("Nao tem movimentos possiveis para a peca escolhida");
 		}
-		
 	}
 	
 	private void validateTargetPosition(Position source, Position target) {
@@ -84,6 +96,7 @@ public class ChessMatch {
 	
 	private void placeNewPiece(char column, int row, ChessPiece piece) {
 		board.PlacePiece(piece, new ChessPosition(column, row).toPosition());
+		this.piecesOnTheBoard.add(piece);
 	}
 	
 	private void nextTurn() {
