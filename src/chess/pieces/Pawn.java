@@ -2,13 +2,17 @@ package chess.pieces;
 
 import boardgame.Board;
 import boardgame.Position;
+import chess.ChessMatch;
 import chess.ChessPiece;
 import chess.Color;
 
 public class Pawn extends ChessPiece {
 
-	public Pawn(Board board, Color color) {
+	private ChessMatch chessMatch;
+	
+	public Pawn(Board board, Color color, ChessMatch chessMatch) {
 		super(board, color);
+		this.chessMatch = chessMatch;
 	}
 
 	@Override
@@ -44,7 +48,27 @@ public class Pawn extends ChessPiece {
 			p.setValues(position.getRow() - 1, position.getColumn() + 1);
 			if (getBoard().positionExists(p) && isThereOpponentPiece(p)) {
 				mat[p.getRow()][p.getColumn()] = true;
-			}			
+			}	
+			
+			//Enpassant para os brancos
+			//A posicao 3 da matriz é quando o peao preto moveu duas pecas entao ele tem que esta ali
+			if(this.position.getRow() == 3){
+				//teste para direita
+				Position left = new Position(position.getRow(), position.getColumn()-1);
+				if (this.getBoard().positionExists(left) 
+						&& isThereOpponentPiece(left) 
+						&& this.getBoard().piece(left) == this.chessMatch.getEnPassantVulnerable()) {
+					//-1 pq o peao branco anda pra cima
+						mat[left.getRow()-1][left.getColumn()] = true;
+				}
+				//teste para a esquerca
+				Position right = new Position(position.getRow(), position.getColumn()+1);
+				if (this.getBoard().positionExists(right) 
+						&& isThereOpponentPiece(right) 
+						&& this.getBoard().piece(right) == this.chessMatch.getEnPassantVulnerable()) {
+						mat[right.getRow()-1][right.getColumn()] = true;
+				}
+			}
 		}
 		//Mesmo codigo para peca preta 
 		else {
@@ -65,6 +89,26 @@ public class Pawn extends ChessPiece {
 			if (getBoard().positionExists(p) && isThereOpponentPiece(p)) {
 				mat[p.getRow()][p.getColumn()] = true;
 			}	
+			
+			//Enpassant para os pretos
+			//A posicao 4 da matriz é quando o peao branco moveu duas pecas entao ele tem que esta ali
+			if(this.position.getRow() == 4){
+				//teste para direita
+				Position left = new Position(position.getRow(), position.getColumn()-1);
+				if (this.getBoard().positionExists(left) 
+						&& isThereOpponentPiece(left) 
+						&& this.getBoard().piece(left) == this.chessMatch.getEnPassantVulnerable()) {
+					//+1 pq o peao preto anda pra baixo
+						mat[left.getRow()+1][left.getColumn()] = true;
+				}
+				//teste para a esquerca
+				Position right = new Position(position.getRow(), position.getColumn()+1);
+				if (this.getBoard().positionExists(right) 
+						&& isThereOpponentPiece(right) 
+						&& this.getBoard().piece(right) == this.chessMatch.getEnPassantVulnerable()) {
+						mat[right.getRow()+1][right.getColumn()] = true;
+				}
+			}
 		}
 		return mat;
 	}
