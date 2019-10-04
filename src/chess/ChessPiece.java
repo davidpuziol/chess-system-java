@@ -34,6 +34,7 @@ public abstract class ChessPiece extends Piece {
 		return ChessPosition.fromPosition(this.position);
 	}
 	
+	//Testa se a posicao passada tem um peca de oponente vendo se a posicao existe e se a cor eh diferente da peca do jogador
 	protected boolean isThereOpponentPiece(Position pos) {
 		ChessPiece p = (ChessPiece) this.getBoard().piece(pos);
 		if (p != null && p.getColor() != color) {
